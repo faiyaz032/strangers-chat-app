@@ -48,10 +48,23 @@ export default function Chat() {
         setMessages(state => [...state, message]);
       }
     });
+
+    socket.on('otherUserTyping', () => {
+      // Handle when the other user is typing
+      setTyping(true);
+    });
+
+    socket.on('otherUserStopTyping', () => {
+      // Handle when the other user stops typing
+      setTyping(false);
+    });
   }, [socket, conversationId]);
 
   return (
     <div className="messaging-container">
+      <div className="messaging-header">
+        <h3>{conversationStarted ? 'Conversation Started' : 'Finding Strangers....'}</h3>
+      </div>
       {/* Display messages or a message indicating no messages */}
       <div className="messages-display">
         {messages.length
@@ -65,14 +78,16 @@ export default function Chat() {
           : 'No Messages Found'}
       </div>
 
-      <TextInput
-        socket={socket}
-        conversationId={conversationId}
-        typing={typing}
-        setTyping={setTyping}
-      />
+      {conversationStarted && (
+        <TextInput
+          socket={socket}
+          conversationId={conversationId}
+          typing={typing}
+          setTyping={setTyping}
+        />
+      )}
 
-      <p>{conversationStarted ? 'Conversation Started' : 'Find Strangers....'}</p>
+      {typing && <p>Stranger is typing....</p>}
     </div>
   );
 }

@@ -61,6 +61,22 @@ io.on('connection', socket => {
       io.emit('messageReceived', { conversationIdSocket: conversationId, message });
     }
   });
+
+  // Handle "userTyping" event when a user starts typing
+  socket.on('userTyping', ({ conversationId, typingUser }) => {
+    const otherUser = conversations.get(conversationId).participants.find(u => u !== typingUser);
+
+    // Emit an event to inform the other user that someone is typing
+    io.to(otherUser).emit('otherUserTyping', otherUser);
+  });
+
+  // Handle "userStopTyping" event when a user stops typing
+  socket.on('userStopTyping', ({ conversationId, typingUser }) => {
+    const otherUser = conversations.get(conversationId)?.participants.find(u => u !== typingUser);
+
+    // Emit an event to inform the other user that someone stopped typing
+    io.to(otherUser).emit('otherUserStopTyping', otherUser);
+  });
 });
 
 const PORT = process.env.PORT || 5000;

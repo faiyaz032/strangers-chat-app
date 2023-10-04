@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
+import debounce from '../utils/debounce';
 
 export default function TextInput({ socket, conversationId, typing }) {
   const [text, setText] = useState('');
@@ -27,7 +28,10 @@ export default function TextInput({ socket, conversationId, typing }) {
       socket.emit('userTyping', { conversationId, typingUser: socket.id });
     }
 
-    //TODO: Need to implements debouncing here
+    //debouncing for tracking user typing status
+    debounce(() => {
+      socket.emit('userStopTyping', { conversationId, typingUser: socket.id });
+    }, 4000);
   };
 
   return (
