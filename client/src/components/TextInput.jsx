@@ -1,15 +1,33 @@
+/* eslint-disable react/prop-types */
 import { useState } from 'react';
 
-export default function TextInput() {
+export default function TextInput({ socket, conversationId, typing }) {
   const [text, setText] = useState('');
-
-  const handleOnChange = e => {
-    setText(e.target.value);
-  };
 
   const handleSubmit = e => {
     e.preventDefault();
+
+    const text = e.target[0].value;
+
+    const message = {
+      text,
+      sender: socket.id,
+      timestamp: new Date().toISOString(),
+    };
+
+    socket.emit('sendMessage', { conversationId, message });
+    socket.emit('userStopTyping', { conversationId, typingUser: socket.id });
+
     setText('');
+  };
+
+  const handleOnChange = e => {
+    setText(e.target.value);
+    if (!typing) {
+      socket.emit('userTyping', { conversationId, typingUser: socket.id });
+    }
+
+    //TODO: Need to implements debouncing here
   };
 
   return (

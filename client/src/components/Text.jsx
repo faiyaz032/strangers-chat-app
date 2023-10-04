@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 export default function Text({ type, message }) {
   return (
     <div className={type === 'receiver' ? 'message-received' : 'message-sent'}>
