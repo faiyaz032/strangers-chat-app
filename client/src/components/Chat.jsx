@@ -58,7 +58,34 @@ export default function Chat() {
       // Handle when the other user stops typing
       setTyping(false);
     });
+
+    socket.on('conversationDismissed', () => {
+      // Handle conversation dismissal (when the other user disconnects)
+      setConversationFinished(true);
+      setUserSkipped(true);
+    });
   }, [socket, conversationId]);
+
+  // Handle "Skip" button click
+  const skipClickHandler = () => {
+    // Emit "userSkipped" event (for debugging?)
+    setUserSkipped(true);
+    socket.emit('userSkipped', { conversationId, socketId });
+  };
+
+  // Handle "New" button click (seems to be missing server-side implementation)
+  const newClickHandler = () => {
+    setConversationStarted(false);
+    socket.emit('newButtonClicked', socketId);
+  };
+
+  // Render the "Skip" or "New" button based on userSkipped state
+  let dynamicButton;
+  if (!userSkipped) {
+    dynamicButton = <button onClick={skipClickHandler}>Skip</button>;
+  } else {
+    dynamicButton = <button onClick={newClickHandler}>New</button>;
+  }
 
   return (
     <div className="messaging-container">
@@ -78,16 +105,19 @@ export default function Chat() {
           : 'No Messages Found'}
       </div>
 
-      {conversationStarted && (
+      {!conversationFinished && !userSkipped ? (
         <TextInput
           socket={socket}
           conversationId={conversationId}
           typing={typing}
           setTyping={setTyping}
         />
+      ) : (
+        <p>Conversation Dismissed</p>
       )}
 
       {typing && <p>Stranger is typing....</p>}
+      {dynamicButton}
     </div>
   );
 }
