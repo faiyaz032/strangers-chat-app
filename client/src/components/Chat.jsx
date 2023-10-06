@@ -15,7 +15,7 @@ export default function Chat() {
 
   // Establish a socket.io connection to the server
   useEffect(() => {
-    const connection = io('http://localhost:5000');
+    const connection = io('https://strangers-chat-app-server.onrender.com');
     connection.on('connect', () => {
       setSocketId(connection.id);
       setSocket(connection);

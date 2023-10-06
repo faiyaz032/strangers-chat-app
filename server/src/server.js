@@ -1,8 +1,13 @@
+const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const SocketManager = require('./SocketManager');
+const cors = require('cors');
 
-const httpServer = http.createServer();
+const app = express();
+const httpServer = http.createServer(app);
+
+app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173' }));
 
 // Create a Socket.IO server with CORS configuration
 const io = new Server(httpServer, {
