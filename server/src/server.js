@@ -1,15 +1,14 @@
-const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const SocketManager = require('./SocketManager');
 
-const app = express();
-const httpServer = http.createServer(app);
+const httpServer = http.createServer();
 
 // Create a Socket.IO server with CORS configuration
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:5173', // Define the allowed origin for socket connections
+    // Define the allowed origin for socket connections
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
   },
 });
 
