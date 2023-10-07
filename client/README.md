@@ -1,4 +1,4 @@
-# Strangers Chat - Server
+# Strangers Chat - Client
 
 This folder contains the client side code for a real-time chat application built with Node.js, Express, Socket.IO, and React. The application allows users to connect with random strangers in real-time and engage in text-based conversations.
 
